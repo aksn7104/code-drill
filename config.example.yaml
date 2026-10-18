@@ -1,0 +1,42 @@
+# code-drill の設定の見本です。
+# このファイルを config.yaml という名前でコピーして、書き換えて使います。
+# config.yaml がなくても動きます（書かなかった項目は、下の「既定」の値になります）。
+
+# 学習する曜日。ここにない曜日は、休みの日になります。
+# 曜日は mon tue wed thu fri sat sun で書きます。（既定：日曜以外）
+days: [mon, tue, wed, thu, fri, sat]
+
+# 使う言語。questions/ の下の、言語のフォルダの名前で書きます。
+# 書かないと、questions/ の下で問題集のあるフォルダを、すべて使います。
+languages: [python, sql]
+
+# 言語の切り替え。「言語名: 日数」で、学習した日の「日数に1度」その言語を出します。
+# 下の例は、学習日の2日に1度（2日目、4日目、…）が SQL で、ほかの日は languages の先頭（python）です。
+# 書かないと、languages の順に1日ずつ回します。
+language_rotation:
+  sql: 2
+
+# 1日に出す問題の数。（既定：2）
+questions_per_day: 2
+
+# 全問正解の学習日が何日続いたら、「難易度を上げますか？」と聞くか。（既定：2）
+# 難易度は Lv1〜Lv5。問題を解かずに上げるときは python drill.py --level-up
+level_up_streak: 2
+
+# 長めの読解の問題（問題に long: true と書いたもの）を出す曜日。none で出しません。（既定：sat＝土曜）
+long_day: sat
+
+
+# 決まった時刻の通知（python notify.py）に使う部品。none / windows / email / ntfy から選びます。（既定：none＝通知しない）
+#   windows … Windows の画面の右下にトースト通知を出す（Windows だけ。PCの外には何も出ません）
+#   email   … メールを送る。送り先などは .env に書きます（書き方は notifier.py の冒頭）
+#   ntfy    … スマホなどにプッシュ通知を送る（ntfy アプリ。iPhone・Android 対応）。設定は .env に書きます
+# 通知を出す時刻は、Windows のタスク スケジューラなどで決めます（登録の例は notify.py の冒頭）。
+notifier: none
+
+# 個人情報を守る設定。strict / standard から選びます。（既定：strict）
+#   strict   … PCの外に出る機能（email・ntfy の通知）を使えなくします。外に出る情報を、ゼロにしたい人向け
+#   standard … email・ntfy を使えます。外に出るのは「今日の学習の時間です（2問）」のような決まった一文だけで、
+#              問題・正誤・記録の中身は含みません（メールのサーバーや ntfy のサーバーには、この一文と送り先が渡ります）
+# email・ntfy を使うときは standard にしてください。
+privacy: strict

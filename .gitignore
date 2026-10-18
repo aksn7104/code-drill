@@ -1,0 +1,19 @@
+# 秘密情報・個人の記録は、Git に上げない（上げると、公開した瞬間に漏れる）
+
+# パスワード・トークンを書く .env（見本の .env.example だけは上げてよい）
+.env
+.env.*
+!.env.example
+
+# 学習の記録と進み具合（個人の記録）
+data/
+
+# 個人の設定（見本の config.example.yaml だけを上げる）
+config.yaml
+
+# Python が作る一時ファイル
+__pycache__/
+*.pyc
+
+# 無料版・有料版の書き出し先（build_editions.py が作る）
+dist/

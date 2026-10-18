@@ -1,0 +1,59 @@
+# 単元1：打撃成績の表から、SELECT で取り出す（SELECT・FROM・WHERE・並べ替え・集計）
+# 題材は架空のデータです。
+#
+# 使う表 batters（打者）の列：
+#   name（選手名）、team（チーム）、hits（安打）、at_bats（打数）、average（打率）
+
+- id: sql-bat-01-001
+  unit: 表から列を取り出す（SELECT・FROM）
+  level: 1
+  type: choice
+  question: batters 表から、すべての選手の名前を取り出します。空欄に入るキーワードはどれですか？
+  code: |
+    SELECT name ___ batters;
+  choices: ["FROM", "WHERE", "ORDER BY", "GROUP BY"]
+  answer: "FROM"
+  explanation: |
+    「どの表から取り出すか」は FROM で指定します。
+    SELECT で取り出す列を、FROM で表を選ぶ、という組み合わせです。
+  hint: 表の名前の前に付くキーワードです。
+
+- id: sql-bat-01-002
+  unit: 条件で絞り込む（WHERE）
+  level: 2
+  type: blank
+  question: 打率が 0.300 以上の選手だけを取り出します。空欄に入るキーワードを答えてください。
+  code: |
+    SELECT name FROM batters ___ average >= 0.300;
+  answer: "WHERE"
+  explanation: |
+    行を条件で絞り込むときは WHERE を使います。
+    大文字・小文字は区別されないので、where と入力しても正解です。
+  hint: 「どこの行か」を指定するキーワードです。
+
+- id: sql-bat-01-003
+  unit: 並べ替える（ORDER BY・DESC）
+  level: 2
+  type: choice
+  question: 打率の高い順に並べて取り出します。空欄に入るキーワードはどれですか？
+  code: |
+    SELECT name, average FROM batters ORDER BY average ___;
+  choices: ["ASC", "DESC", "LIMIT", "TOP"]
+  answer: "DESC"
+  explanation: |
+    ORDER BY のあとに DESC を付けると、大きい順（降順）になります。
+    小さい順（昇順）は ASC で、何も付けないときも昇順です。
+  hint: 降順を表す、4文字のキーワードです。
+
+- id: sql-bat-01-004
+  unit: チームごとに集計する（GROUP BY・SUM）
+  level: 3
+  type: blank
+  question: チームごとの安打数の合計を求めます。空欄に入るキーワードを答えてください。
+  code: |
+    SELECT team, SUM(hits) FROM batters ___ team;
+  answer: ["GROUP BY", "GROUPBY"]
+  explanation: |
+    同じ値の行をまとめて集計するときは GROUP BY を使います。
+    SUM(hits) は、まとめた行の安打数の合計を返します。
+  hint: 「〜ごとにまとめる」を表す、2語のキーワードです。

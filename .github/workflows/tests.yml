@@ -1,0 +1,45 @@
+# 自動試験：コードを GitHub に送る（push）たび、または変更の提案（pull request）が来るたびに、
+# Windows と Linux で全部の試験を動かして、壊れていないかを確かめます。
+# 読み取り権限だけで動きます。パスワードなどの秘密（secrets）は使いません。
+name: tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: 試験（${{ matrix.os }}）
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 依存を入れる
+        run: python -m pip install -r requirements.txt
+
+      # Linux には画面がないので、仮想の画面（xvfb）を用意して、ウィンドウ版の試験も動かす
+      - name: 仮想の画面を入れる（Linux）
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
+      - name: 試験を実行する（Linux）
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python run_tests.py
+
+      - name: 試験を実行する（Windows）
+        if: runner.os == 'Windows'
+        run: python run_tests.py

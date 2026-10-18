@@ -1,0 +1,69 @@
+# 単元1：打撃成績を変数に入れて計算する（変数・四則演算・文字列）
+# 題材は架空のデータです。
+
+- id: py-bat-01-001
+  unit: 打席数を求める（変数・足し算）
+  level: 1
+  type: choice
+  question: 打数と四球の合計から、打席数を求めます。空欄に入る記号はどれですか？
+  code: |
+    at_bats = 480
+    walks = 62
+    plate_appearances = at_bats ___ walks
+    print(plate_appearances)
+  choices: ["+", "-", "*", "/"]
+  answer: "+"
+  explanation: |
+    打席数は「打数 + 四球」で求めるので、足し算の + が入ります。
+    変数は「名前 = 値」で作り、あとから名前で呼び出せます。
+  hint: 打席数は、打数と四球をあわせた数です。
+
+- id: py-bat-01-002
+  unit: 打率を計算する（割り算・float）
+  level: 2
+  type: blank
+  question: 安打数と打数から打率を求めます。空欄に入る記号を答えてください。
+  code: |
+    hits = 150
+    at_bats = 480
+    average = hits ___ at_bats
+    print(round(average, 3))
+  answer: "/"
+  explanation: |
+    割り算は / です。結果は割り切れなくても小数（float）で返ります。
+    round(値, 3) は、小数第3位までに丸める関数です。
+  hint: 打率は「安打 ÷ 打数」です。
+
+- id: py-bat-01-003
+  unit: 選手名を表示する（文字列・f文字列）
+  level: 2
+  type: blank
+  question: 名前と本塁打数を1行で表示します。空欄に入る1文字を答えてください。
+  code: |
+    name = "山田"
+    home_runs = 24
+    print(___"{name}選手は{home_runs}本塁打")
+  answer: ["f", "F"]
+  explanation: |
+    文字列の前に f を付けると、{ } の中の変数が値に置き換わります（f文字列）。
+    f を付けないと、{name} という文字がそのまま表示されます。
+  hint: 文字列の前に付けて、変数を埋め込めるようにする1文字です。
+
+- id: py-bat-01-004
+  unit: 塁打数を計算する（整数の掛け算・足し算）
+  level: 3
+  type: choice
+  question: 単打・二塁打・本塁打から塁打数を求めます。空欄に入る式はどれですか？
+  code: |
+    singles = 90
+    doubles = 30
+    home_runs = 24
+    total_bases = singles + ___ + home_runs * 4
+    print(total_bases)
+  choices: ["doubles", "doubles * 2", "doubles + 2", "doubles / 2"]
+  answer: "doubles * 2"
+  explanation: |
+    塁打数は、単打1・二塁打2・三塁打3・本塁打4の重みで数えます。
+    二塁打は2塁分なので doubles * 2 です。
+    掛け算は足し算より先に計算されるので、home_runs * 4 に括弧は要りません。
+  hint: 二塁打は、1本で何塁分でしょうか。
