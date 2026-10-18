@@ -16,6 +16,9 @@ jobs:
     name: 試験（${{ matrix.os }}）
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
+    # 文字の符号化を UTF-8 にそろえる（Windows の実行環境では、日本語の出力で止まってしまうため）
+    env:
+      PYTHONUTF8: "1"
     strategy:
       fail-fast: false
       matrix:

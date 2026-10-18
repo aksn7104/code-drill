@@ -301,6 +301,10 @@ def write_report(items, counts):
 
 
 def main():
+    # 出力先の符号化が日本語に対応していなくても（Windows の自動試験など）、止まらないようにする
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     items, missing = collect()
     if missing:
         print("説明（docstring）が決まった形でないテストがあります:")

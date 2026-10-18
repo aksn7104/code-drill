@@ -6,6 +6,7 @@ GitHub Actions が実際に動くこと（特に Windows）は、公開したあ
 """
 
 import ast
+import os
 import re
 import shutil
 import subprocess
@@ -116,6 +117,43 @@ class WorkflowTest(unittest.TestCase):
             )
             p = subprocess.run([sys.executable, "run_tests.py"], cwd=project, capture_output=True, text=True, timeout=600)
             self.assertNotEqual(p.returncode, 0)
+
+    def test_20_workflow_uses_utf8(self):
+        """TC-REL-20 | 異常系 | 自動試験の設定が、文字の符号化を UTF-8 にそろえている（Windows の自動試験が、日本語の出力で止まらないように）
+
+        入力：.github/workflows/tests.yml
+        期待：試験の job の環境変数（env）に、PYTHONUTF8 が "1" で入っている
+        根拠：GitHub の Windows の実行環境では、Python の出力の符号化が cp1252 になり、日本語を出力した時点で UnicodeEncodeError で止まる（実際に、最初の push で全件失敗した）
+        """
+        data, _, _ = self.load()
+        job = next(iter(data["jobs"].values()))
+        env = {**(data.get("env") or {}), **(job.get("env") or {})}
+        self.assertEqual(str(env.get("PYTHONUTF8")), "1")
+
+    def test_21_run_tests_survives_a_cp1252_console(self):
+        """TC-REL-21 | 異常系 | 出力先の符号化が cp1252（日本語を出せない）でも、run_tests.py は止まらずに結果を出して終わる
+
+        入力：プロジェクトのコピーに、必ず通る試験を1件だけ置き、PYTHONIOENCODING=cp1252・PYTHONUTF8 なしで run_tests.py を実行
+        期待：終了コード 0。UnicodeEncodeError が出ない。出力に「判定: 合格」が（UTF-8 で）ある
+        根拠：Windows の自動試験や、リダイレクトした実行では、出力の符号化が日本語に対応していないことがある
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            project = copy_project(Path(tmp))
+            for old_test in (project / "tests").glob("test_*.py"):
+                old_test.unlink()
+            (project / "tests" / "test_zz_forced_pass.py").write_text(
+                '"""x"""\nimport unittest\n\n\nclass T(unittest.TestCase):\n    def test_01_pass(self):\n'
+                '        """TC-DAT-99 | 正常系 | わざと成功\n\n        入力：なし\n        期待：成功\n        根拠：試験用\n        """\n        self.assertTrue(True)\n',
+                encoding="utf-8",
+            )
+            env = {k: v for k, v in os.environ.items() if k != "PYTHONUTF8"}
+            env["PYTHONIOENCODING"] = "cp1252"
+            p = subprocess.run([sys.executable, "run_tests.py"], cwd=project, capture_output=True, env=env, timeout=600)
+            out = p.stdout.decode("utf-8", errors="replace")
+            err = p.stderr.decode("utf-8", errors="replace")
+            self.assertNotIn("UnicodeEncodeError", err)
+            self.assertEqual(p.returncode, 0, err)
+            self.assertIn("判定: 合格", out)
 
 
 class ReadmeTest(unittest.TestCase):
